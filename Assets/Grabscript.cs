@@ -11,6 +11,7 @@ public class Grabscript : MonoBehaviour
     public Transform holdpoint;
     public float throwforce;
     public LayerMask notgrabbed;
+    SpriteRenderer sprite;
 
     // Use this for initialization
     void Start()
@@ -21,6 +22,23 @@ public class Grabscript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!grabbed)
+        {
+            Physics2D.queriesStartInColliders = false;
+
+            hit = Physics2D.Raycast(transform.position, Vector2.right * transform.localScale.x, distance);
+
+            if (hit.collider != null && hit.collider.tag == "grabbable")
+            {
+                sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
+                sprite.color = new Color(1f, 1f, 1f, 1f);
+
+            }
+            
+            //grab
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.B))
         {
