@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	
 	void Update ()
     {
+        //Detection des mouvements
         float _x = Input.GetAxisRaw("Horizontal");
         float _y = Input.GetAxis("Jump");
 
@@ -22,5 +23,9 @@ public class PlayerController : MonoBehaviour {
         Vector2 _velocity = new Vector2(_x, _y);
 
         motor.RunAndJump(_velocity);
+
+        //attrapage
+
+
     }
 }
