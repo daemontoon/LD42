@@ -7,6 +7,10 @@ public class PlayerMotor : MonoBehaviour {
     public bool _grounded;
     private Vector2 velocity;
     private Rigidbody2D rb;
+
+    [SerializeField]
+    private Animator anim;
+
     [SerializeField]
     private float maxSpeed, maxSpeedJump, radiusCircle;
 
@@ -19,10 +23,16 @@ public class PlayerMotor : MonoBehaviour {
 	void Start () {
         velocity = Vector2.zero;
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
 	}
-	
 
-	void FixedUpdate () {
+    private void Update()
+    {
+        anim.SetFloat("SpeedX", Mathf.Abs(rb.velocity.x));
+
+        anim.SetFloat("SpeedY", Mathf.Abs(rb.velocity.y));
+    }
+    void FixedUpdate () {
         PerformRunandJump();
 	}
     public void RunAndJump(Vector2 _velocity)

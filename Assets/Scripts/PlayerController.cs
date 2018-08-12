@@ -22,11 +22,11 @@ public class PlayerController : MonoBehaviour {
 
         if(_x < 0F)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            gameObject.GetComponent<SpriteRenderer>().flipX = false;
         }
         if (_x > 0F)
         {
-            gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            gameObject.GetComponent<SpriteRenderer>().flipX = true;
         }
         // get velocity
         Vector2 _velocity = new Vector2(_x, _y);

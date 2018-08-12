@@ -27,11 +27,14 @@ public class Grabscript : MonoBehaviour
     private float ballVelocityY;
     public float constantSpeed;
 
+    private Animator anim;
+
 
     // Use this for initialization
     void Start()
     {
         canInteract = true;
+        anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -71,6 +74,7 @@ public class Grabscript : MonoBehaviour
                 {
                     ball = hit.collider.gameObject.GetComponent<Rigidbody2D>();
                     grabbed = true;
+                    anim.SetBool("Grab", true);
 
                 }
 
@@ -80,7 +84,7 @@ public class Grabscript : MonoBehaviour
             else if (!Physics2D.OverlapPoint(holdpoint.position, notgrabbed))
             {
                 grabbed = false;
-
+                anim.SetBool("Grab", false);
                 if (hit.collider.gameObject.GetComponent<Rigidbody2D>() != null)
                 {
 
@@ -134,6 +138,7 @@ public class Grabscript : MonoBehaviour
     public void RealeaseMouse()
     {
         grabbed = false;
+        anim.SetBool("Grab", false);
         mouseEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         ballVelocityX = (mouseStartPosition.x - mouseEndPosition.x)/2;
         ballVelocityY = (mouseStartPosition.y - mouseEndPosition.y)/2;
