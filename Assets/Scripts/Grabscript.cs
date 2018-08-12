@@ -15,7 +15,7 @@ public class Grabscript : MonoBehaviour
     private Vector2 mousePos;
     private Vector2 direction;
 
-
+    public BoxControll movingBox;
     public Rigidbody2D ball;
     private Vector2 mouseStartPosition;
     private Vector2 mouseEndPosition;
@@ -47,7 +47,7 @@ public class Grabscript : MonoBehaviour
 
             hit = Physics2D.Raycast(transform.position, direction, distance);
 
-            if (hit.collider != null && hit.collider.tag == "grabbable")
+            if (hit.collider != null && hit.collider.tag == "grabbable" && hit.collider.gameObject.layer == 9)
             {
                 hit.collider.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
 
@@ -58,7 +58,7 @@ public class Grabscript : MonoBehaviour
 
 
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetMouseButtonDown(1))
         {
 
             if (!grabbed)
@@ -67,7 +67,7 @@ public class Grabscript : MonoBehaviour
 
                 hit = Physics2D.Raycast(transform.position, direction, distance);
 
-                if (hit.collider != null && hit.collider.tag == "grabbable")
+                if (hit.collider != null && hit.collider.tag == "grabbable" && hit.collider.gameObject.layer == 9)
                 {
                     ball = hit.collider.gameObject.GetComponent<Rigidbody2D>();
                     grabbed = true;
@@ -84,7 +84,7 @@ public class Grabscript : MonoBehaviour
                 if (hit.collider.gameObject.GetComponent<Rigidbody2D>() != null)
                 {
 
-                    hit.collider.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(transform.localScale.x, 1) * throwforce;
+                    hit.collider.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 3) * throwforce;
                 }
 
 
@@ -139,7 +139,11 @@ public class Grabscript : MonoBehaviour
         ballVelocityY = (mouseStartPosition.y - mouseEndPosition.y)/2;
         Vector2 tempVelocity = new Vector2(ballVelocityX, ballVelocityY).normalized + new Vector2(ballVelocityX, ballVelocityY); //
         ball.velocity = constantSpeed * tempVelocity;
+        movingBox = ball.GetComponent<BoxControll>();
+        movingBox.thrown = true;
+        movingBox.gameObject.layer = 11; 
         didClick = false;
         didDrag = false;
+
     }
 }
