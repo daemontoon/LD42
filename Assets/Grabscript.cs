@@ -12,11 +12,26 @@ public class Grabscript : MonoBehaviour
     public float throwforce;
     public LayerMask notgrabbed;
     SpriteRenderer sprite;
+    private Vector2 mousePos;
+    private Vector2 direction;
+
+
+    public Rigidbody2D ball;
+    private Vector2 mouseStartPosition;
+    private Vector2 mouseEndPosition;
+
+    public bool didClick;
+    public bool didDrag;
+    public bool canInteract;
+    private float ballVelocityX;
+    private float ballVelocityY;
+    public float constantSpeed;
+
 
     // Use this for initialization
     void Start()
     {
-
+        canInteract = true;
     }
 
     // Update is called once per frame
@@ -25,13 +40,16 @@ public class Grabscript : MonoBehaviour
         if (!grabbed)
         {
             Physics2D.queriesStartInColliders = false;
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            direction.x = -(transform.position.x - mousePos.x);
+            direction.y = -(transform.position.y - mousePos.y);
 
-            hit = Physics2D.Raycast(transform.position, Vector2.right * transform.localScale.x, distance);
+
+            hit = Physics2D.Raycast(transform.position, direction, distance);
 
             if (hit.collider != null && hit.collider.tag == "grabbable")
             {
-                sprite = hit.collider.gameObject.GetComponent<SpriteRenderer>();
-                sprite.color = new Color(1f, 1f, 1f, 1f);
+                hit.collider.gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
 
             }
             
@@ -47,10 +65,11 @@ public class Grabscript : MonoBehaviour
             {
                 Physics2D.queriesStartInColliders = false;
 
-                hit = Physics2D.Raycast(transform.position, Vector2.right * transform.localScale.x, distance);
+                hit = Physics2D.Raycast(transform.position, direction, distance);
 
                 if (hit.collider != null && hit.collider.tag == "grabbable")
                 {
+                    ball = hit.collider.gameObject.GetComponent<Rigidbody2D>();
                     grabbed = true;
 
                 }
@@ -76,8 +95,22 @@ public class Grabscript : MonoBehaviour
         }
 
         if (grabbed)
+        { 
             hit.collider.gameObject.transform.position = holdpoint.position;
 
+            if(Input.GetMouseButtonDown(0) && canInteract)
+            {
+                MouseClicked();
+            }
+            if(Input.GetMouseButton(0) && didClick)
+            {
+                MouseDragged();
+            }
+            if (Input.GetMouseButtonUp(0) && canInteract)
+            {
+                RealeaseMouse();
+            }
+        }
 
     }
 
@@ -86,5 +119,27 @@ public class Grabscript : MonoBehaviour
         Gizmos.color = Color.green;
 
         Gizmos.DrawLine(transform.position, transform.position + Vector3.right * transform.localScale.x * distance);
+    }
+
+    public void MouseClicked()
+    {
+        mouseStartPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        didClick = true;
+    }
+    public void MouseDragged()
+    {
+        didDrag = true;
+
+    }
+    public void RealeaseMouse()
+    {
+        grabbed = false;
+        mouseEndPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        ballVelocityX = (mouseStartPosition.x - mouseEndPosition.x)/2;
+        ballVelocityY = (mouseStartPosition.y - mouseEndPosition.y)/2;
+        Vector2 tempVelocity = new Vector2(ballVelocityX, ballVelocityY).normalized + new Vector2(ballVelocityX, ballVelocityY); //
+        ball.velocity = constantSpeed * tempVelocity;
+        didClick = false;
+        didDrag = false;
     }
 }
